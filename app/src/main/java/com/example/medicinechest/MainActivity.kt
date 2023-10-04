@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -26,7 +28,6 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf("Полный список")
             }
             MedicineChestTheme {
-                Row {
                     Scaffold(
                         scaffoldState = scaffoldState,
                         topBar = {
@@ -49,27 +50,32 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
                         it.calculateBottomPadding()
+                    LazyColumn(modifier = Modifier.fillMaxSize()){
+                        itemsIndexed(listOf<String>("Афобазол", "АЦЦ", "Глицин", "Отривин")
+                        ){ index, item ->
+                            ListItem(name = item)
+                        }
                     }
-                    /*Row{
-                        ListItem(name = "Default", valueUntil = "23/10/05")
-                        ListItem(name = "Afobazol", valueUntil = "25/12/23") //не работает
-                    }*/
                 }
             }
         }
     }
 }
 
+
 @Composable
-private fun ListItem(name : String, valueUntil : String){
+private fun ListItem(name : String, valueUntil : String = "23/10/44"){
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(10.dp),
     shape = RoundedCornerShape(15.dp),
     elevation = 5.dp){
         Box{
-            Row(verticalAlignment = Alignment.CenterVertically){
-                Column {
+            Row(verticalAlignment = Alignment.CenterVertically
+            ){
+                Column( modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
                     Text(text = name)
                     Text(text = valueUntil)
                 }
