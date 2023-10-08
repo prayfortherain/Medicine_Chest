@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Medicine Chest</string>
+    <string name="title_activity_info">InfoActivity</string>
 </resources>

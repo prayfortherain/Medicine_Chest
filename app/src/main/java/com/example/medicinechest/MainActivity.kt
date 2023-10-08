@@ -1,5 +1,6 @@
 package com.example.medicinechest
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,69 +16,77 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.medicinechest.ui.theme.MedicineChestTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val medicine = listOf("Афобазол", "АЦЦ", "Глицин", "Отривин")
         setContent {
             val scaffoldState = rememberScaffoldState()
             val coroutineScope = rememberCoroutineScope()
             var topBarTitle = remember {
                 mutableStateOf("Полный список")
             }
-            MedicineChestTheme {
-                    Scaffold(
-                        scaffoldState = scaffoldState,
-                        topBar = {
-                            MainTopBar(
-                                title = topBarTitle.value,
-                                scaffoldState
-                            )
-                        },
-                        drawerContent = {
-                            DrawerMenu { event ->
-                                when (event) {
-                                    is DrawerEvents.OnItemClick -> {
-                                        topBarTitle.value = event.title
-                                    }
-                                }
-                                coroutineScope.launch {
-                                    scaffoldState.drawerState.close()
-                                }
+            Scaffold(
+                scaffoldState = scaffoldState,
+                topBar = {
+                    MainTopBar(
+                        title = topBarTitle.value,
+                        scaffoldState
+                    )
+                },
+                drawerContent = {
+                    DrawerMenu { event ->
+                        when (event) {
+                            is DrawerEvents.OnItemClick -> {
+                                topBarTitle.value = event.title
                             }
                         }
-                    ) {
-                        it.calculateBottomPadding()
-                    LazyColumn(modifier = Modifier.fillMaxSize()){
-                        itemsIndexed(listOf<String>("Афобазол", "АЦЦ", "Глицин", "Отривин")
-                        ){ index, item ->
-                            ListItem(name = item)
+                        coroutineScope.launch {
+                            scaffoldState.drawerState.close()
                         }
+                    }
+                }
+            ) {
+                it.calculateBottomPadding()
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    itemsIndexed(
+                        medicine
+                    ) { _, item ->
+                        ListItem(item)
+
                     }
                 }
             }
         }
     }
-}
-
-
-@Composable
-private fun ListItem(name : String, valueUntil : String = "23/10/44"){
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(10.dp),
-    shape = RoundedCornerShape(15.dp),
-    elevation = 5.dp){
-        Box{
-            Row(verticalAlignment = Alignment.CenterVertically
-            ){
-                Column( modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(text = name)
-                    Text(text = valueUntil)
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    private fun ListItem(name: String, validUntil: String = "23/10/44") {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(3.dp),
+            shape = RoundedCornerShape(10.dp),
+            elevation = 5.dp,
+            onClick = {
+                val intent = Intent(this, InfoActivity::class.java)
+                intent.putExtra("name", name)
+                intent.putExtra("date", validUntil)
+                startActivity(intent)
+            }
+        ) {
+            Box {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = name)
+                        Text(text = validUntil)
+                    }
                 }
             }
         }
