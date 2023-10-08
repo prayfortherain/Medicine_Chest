@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -50,6 +51,17 @@ class MainActivity : ComponentActivity() {
                 }
             ) {
                 it.calculateBottomPadding()
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.BottomEnd
+                ){
+                    Button(onClick = { /*TODO*/ },
+                        shape = CircleShape
+                        ) {
+                        Text(text = "+")
+                    }
+                }
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     itemsIndexed(
                         medicine
