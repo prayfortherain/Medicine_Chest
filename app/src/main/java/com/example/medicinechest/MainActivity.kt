@@ -1,5 +1,6 @@
 package com.example.medicinechest
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,12 +18,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.room.*
+import androidx.room.Room.databaseBuilder
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    var medDatabase: AppDatabase? = null
+    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val medicine = listOf("Афобазол", "АЦЦ", "Глицин", "Отривин")
+        var med: List<Medicine?> = listOf(null)
+        medDatabase = databaseBuilder(applicationContext, AppDatabase::class.java, "test").createFromAsset("test.db").fallbackToDestructiveMigration().build()
         setContent {
             val scaffoldState = rememberScaffoldState()
             val coroutineScope = rememberCoroutineScope()
@@ -51,41 +57,53 @@ class MainActivity : ComponentActivity() {
                 }
             ) {
                 it.calculateBottomPadding()
+                coroutineScope.launch {
+                    med = getList() }
+
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    itemsIndexed( med
+                    ) { index, item ->
+                        ListItem(item!!.name, index, context = this@MainActivity, dao = medDatabase!!.medicineDao()!!)
+                    }
+                }
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
                     contentAlignment = Alignment.BottomEnd
-                ){
-                    Button(onClick = { /*TODO*/ },
+                ) {
+                    Button(
+                        onClick = {
+                            val intent = Intent(this@MainActivity, AddActivity::class.java)
+                            startActivity(intent)
+                        },
                         shape = CircleShape
-                        ) {
+                    ) {
                         Text(text = "+")
-                    }
-                }
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    itemsIndexed(
-                        medicine
-                    ) { _, item ->
-                        ListItem(item)
-
                     }
                 }
             }
         }
     }
+
+
+    suspend fun getList(): List<Medicine?> {
+        return medDatabase!!.medicineDao()?.getAll()!!
+    }
+
+    }
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    private fun ListItem(name: String, validUntil: String = "23/10/44") {
+    private fun ListItem(name: String, index: Int, validUntil: String = "23/10/44", context: MainActivity, dao: MedicineDao) {
         Card(modifier = Modifier
             .fillMaxWidth()
             .padding(3.dp),
             shape = RoundedCornerShape(10.dp),
             elevation = 5.dp,
             onClick = {
-                val intent = Intent(this, InfoActivity::class.java)
+                val intent = Intent(context, InfoActivity::class.java)
                 intent.putExtra("name", name)
                 intent.putExtra("date", validUntil)
-                startActivity(intent)
+                context.startActivity(intent)
             }
         ) {
             Box {
@@ -96,11 +114,33 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = name)
+                        dao.getById(index)?.let { Text(text = it.name) }
                         Text(text = validUntil)
                     }
                 }
             }
         }
     }
+
+@Entity(tableName = "Medicine")
+data class Medicine(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "instruction") val instruction: String,
+    @ColumnInfo(name = "sideEffects") val sideEffects: String
+)
+
+@Dao
+interface MedicineDao {
+    @Query("SELECT * FROM Medicine") // вот этот запрос фактически выполняется
+    suspend fun getAll(): List<Medicine?> // список лекарств получаем
+
+    @Query("SELECT * FROM Medicine WHERE id = :id")
+    fun getById(id: Int): Medicine // берем лекарство по ID
+
+}
+
+@Database(entities = [Medicine::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun medicineDao(): MedicineDao?
 }

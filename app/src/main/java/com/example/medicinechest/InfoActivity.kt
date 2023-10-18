@@ -1,5 +1,6 @@
 package com.example.medicinechest
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,19 +17,19 @@ class InfoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val arguments = intent.extras
+            val arguments = this.intent.extras
             val name = arguments?.getString("name")
             val date = arguments?.getString("date")
             Column {
-                chapter(heading = "Название лекарства", description = name!!)
-                chapter(heading = "Годен до:", description = date!!)
-                chapter(
+                Chapter(heading = "Название лекарства", description = name!!)
+                Chapter(heading = "Годен до:", description = date!!)
+                Chapter(
                     heading = "Инструкция по применению:",
                     description = "Гениальная инфа для применения препарата, а следующий раздел это побочки"
                 )
-                chapter(
+                Chapter(
                     heading = "Побочные эффекты",
-                    description = "Как и просили побочки.. У всего есть побочки, побочки, побочки. В концовке будут три точки, три точки. УУУУУ ВСЕГО ЕСТЬ ПОБОЧКИ"
+                    description = "Как и просили побочки"
                 )
             }
             Box(
@@ -42,10 +43,16 @@ class InfoActivity : ComponentActivity() {
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(onClick = {
+                        val intent = Intent(this@InfoActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }) {
                         Text(text = "вернуться")
                     }
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(onClick = {
+                        val intent = Intent(this@InfoActivity, AddActivity::class.java)
+                        startActivity(intent)
+                    }) {
                         Text(text = "обновить")
                     }
                     Button(onClick = { /*TODO*/ }) {
@@ -58,7 +65,7 @@ class InfoActivity : ComponentActivity() {
 }
 
 @Composable
-fun chapter(heading : String, description : String){
+fun Chapter(heading : String, description : String){
     Text(text = heading,
         color = Color.Gray,
         fontSize = 20.sp)
