@@ -22,18 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.room.*
 import androidx.room.Room.databaseBuilder
-import com.example.medicinechest.Dependencies.appDatabase
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
-        Dependencies.init(applicationContext)
         super.onCreate(savedInstanceState)
-
-
-
-        //var med: List<Medicine?> = listOf(null)
+        var appDatabase : AppDatabase = AppDatabase.getDatabase(context = applicationContext)
         setContent {
             val scaffoldState = rememberScaffoldState()
             val coroutineScope = rememberCoroutineScope()

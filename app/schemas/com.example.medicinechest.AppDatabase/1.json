@@ -6,14 +6,8 @@
     "entities": [
       {
         "tableName": "Medicine",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `instruction` TEXT, `sideEffects` TEXT, `checklist` INTEGER, FOREIGN KEY(`checklist`) REFERENCES `Checklist`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT, `checklist` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sideEffects` TEXT, `instruction` TEXT, FOREIGN KEY(`checklist`) REFERENCES `Checklist`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "name",
             "columnName": "name",
@@ -21,10 +15,16 @@
             "notNull": false
           },
           {
-            "fieldPath": "instruction",
-            "columnName": "instruction",
-            "affinity": "TEXT",
+            "fieldPath": "checklist",
+            "columnName": "checklist",
+            "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "sideEffects",
@@ -33,9 +33,9 @@
             "notNull": false
           },
           {
-            "fieldPath": "checklist",
-            "columnName": "checklist",
-            "affinity": "INTEGER",
+            "fieldPath": "instruction",
+            "columnName": "instruction",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],

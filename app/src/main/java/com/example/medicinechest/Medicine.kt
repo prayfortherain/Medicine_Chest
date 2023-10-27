@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
 data class Medicine(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "name") val name: String?,
-    @ColumnInfo(name = "instruction") val instruction: String?,
+    @ColumnInfo(name = "checklist") val checklist: Int?,
     @ColumnInfo(name = "sideEffects") val sideEffects: String?,
-    @ColumnInfo(name = "checklist") val checklist: Int?
+    @ColumnInfo(name = "instruction") val instruction: String?
 )
