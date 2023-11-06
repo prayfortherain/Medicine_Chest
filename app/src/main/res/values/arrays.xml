@@ -2,7 +2,5 @@
 <resources>
     <string-array name="drawer_list">
         <item name="" > Полный список </item>
-        <item name="" > Дополнительный список </item>
-        <item name="add_list"> + Создать новый список</item>
     </string-array>
 </resources>
