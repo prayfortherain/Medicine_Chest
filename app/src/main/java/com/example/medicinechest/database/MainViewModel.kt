@@ -12,19 +12,15 @@ class MainVM(private val MedicineRepository: MedicineRepository): ViewModel() {
     var temp_list1: MutableLiveData<List<String>> = MutableLiveData()
     var medslist: MutableLiveData<List<Medicine>> = MutableLiveData()
     var otherlists: MutableLiveData<List<Medicine>> = MutableLiveData()
+    //var medicine: MutableLiveData<String> = MutableLiveData()
     fun getNameByID(id: Int){
         viewModelScope.launch {
             name.value = MedicineRepository.getNameByID(id)
         }
     }
-    fun getMedicinesList(){
+    fun getMedicinesList(listName: String){
         viewModelScope.launch {
-            medslist.value = MedicineRepository.getMedicinesList()
-        }
-    }
-    fun getMedicineFromList(id : Int){
-        viewModelScope.launch {
-            otherlists.value = MedicineRepository.getMedicineFromList(id)
+            medslist.value = MedicineRepository.getMedicinesList(listName)
         }
     }
     fun getLists(){

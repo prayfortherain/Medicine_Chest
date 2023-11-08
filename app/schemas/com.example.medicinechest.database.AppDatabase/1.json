@@ -2,23 +2,23 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c2b4d815e5f45c417c6f81eab820c1db",
+    "identityHash": "7bcd8f0c806a90a855e77f6814111404",
     "entities": [
       {
         "tableName": "Medicine",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT, `checklist` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sideEffects` TEXT, `instruction` TEXT, FOREIGN KEY(`checklist`) REFERENCES `checklist`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `composition` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `symptoms` TEXT NOT NULL, `contraindications` TEXT NOT NULL, `storageTemperature` TEXT NOT NULL, `sideEffects` TEXT NOT NULL, `instruction` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
-            "fieldPath": "checklist",
-            "columnName": "checklist",
-            "affinity": "INTEGER",
-            "notNull": false
+            "fieldPath": "composition",
+            "columnName": "composition",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "id",
@@ -27,54 +27,34 @@
             "notNull": true
           },
           {
+            "fieldPath": "symptoms",
+            "columnName": "symptoms",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contraindications",
+            "columnName": "contraindications",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storageTemperature",
+            "columnName": "storageTemperature",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "sideEffects",
             "columnName": "sideEffects",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "instruction",
             "columnName": "instruction",
             "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": [
-          {
-            "table": "checklist",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "checklist"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
-      },
-      {
-        "tableName": "checklist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -90,7 +70,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c2b4d815e5f45c417c6f81eab820c1db')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7bcd8f0c806a90a855e77f6814111404')"
     ]
   }
 }

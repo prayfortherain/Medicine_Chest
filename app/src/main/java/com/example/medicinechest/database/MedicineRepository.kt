@@ -9,27 +9,15 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
             return@withContext medicineDao.getNameById(id)
         }
     }
-    suspend fun getAround(a: Int, b: Int): List<Medicine>{
-        return withContext(Dispatchers.IO){
-            return@withContext medicineDao.getAround(a, b)
-        }
-    }
-
     suspend fun getById(id: Int) : Medicine {
         return withContext(Dispatchers.IO){
             return@withContext medicineDao.getById(id)
         }
     }
 
-    suspend fun getMedicinesList(): List<Medicine>{
+    suspend fun getMedicinesList(listName: String): List<Medicine>{
         return withContext(Dispatchers.IO){
-            return@withContext medicineDao.getMedicinesList()
-        }
-    }
-
-    suspend fun getMedicineFromList(id: Int): List<Medicine>{
-        return withContext(Dispatchers.IO){
-            return@withContext medicineDao.getMedicineFromList(id)
+            return@withContext medicineDao.getMedicinesList(listName)
         }
     }
 

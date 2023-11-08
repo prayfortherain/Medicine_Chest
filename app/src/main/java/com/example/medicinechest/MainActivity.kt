@@ -1,6 +1,7 @@
 package com.example.medicinechest
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -44,9 +45,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val scaffoldState = rememberScaffoldState()
             val coroutineScope = rememberCoroutineScope()
-            var topBarTitle = remember { mutableStateOf("Полный список") }
+            var topBarTitle = remember { mutableStateOf("Список лекарств") }
             val openDialog = remember { mutableStateOf(false) }
             var checklists by remember { mutableStateOf(listOf("Loading...")) }
+
             viewModel.getLists()
             viewModel.temp_list1.observe(this) {
                 checklists = it
@@ -60,17 +62,10 @@ class MainActivity : ComponentActivity() {
                             title = topBarTitle.value,
                             scaffoldState
                         )
-                        Spacer(Modifier.weight(1f, true))
-                        IconButton(onClick = { }) {
-                            Icon(
-                                Icons.Filled.Search,
-                                contentDescription = "Поиск"
-                            )
-                        }
                     }
                 },
                 drawerContent = {
-                    DrawerMenu(checklists) { event ->
+                    DrawerMenu(checklists, onEvent = { event ->
                         when (event) {
                             is DrawerEvents.OnItemClick -> {
                                 topBarTitle.value = event.title
@@ -79,27 +74,23 @@ class MainActivity : ComponentActivity() {
                         coroutineScope.launch {
                             scaffoldState.drawerState.close()
                         }
-                    }
-                },
-                bottomBar = {
-                    BottomAppBar{
-                        Spacer(Modifier.weight(1f, true))
-                        IconButton(onClick = {  }) { Icon(Icons.Filled.Search, contentDescription = "Поиск")}
-                    }
+                    }, context = this@MainActivity)
                 },
                 floatingActionButton = {
                     FloatingActionButton(
-                        content = { Icon(Icons.Filled.Add, contentDescription = "Добавить")  },
+                        content = { Icon(Icons.Filled.Add, contentDescription = "Добавить") },
                         onClick = { openDialog.value = true }
                     )
                 },
-                floatingActionButtonPosition = FabPosition.Center,
+                floatingActionButtonPosition = FabPosition.End,
                 isFloatingActionButtonDocked = true,
-                ) { it ->
+            ) { it ->
                 it.calculateBottomPadding()
-                viewModel.getMedicinesList()
+                viewModel.getMedicinesList(
+                    intent.getStringExtra("listName") ?: "Аллергия"
+                )
                 var list by remember {
-                    mutableStateOf(listOf(Medicine("Loading...", 0, 0, "Loading...", "Loading...")))
+                    mutableStateOf(listOf(Medicine("Loading...", "Loading...", 0, "Loading...", "Loading...", "Loading...", "Loading...", "Loading...")))
                 }
                 viewModel.medslist.observe(this) {
                     list = it
@@ -110,24 +101,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 if (openDialog.value) {
-                    AlertDialog(
-                        onDismissRequest = {
-                            openDialog.value = false
-                        },
-                        title = { Text(text = "Что вы хотите добавить?") },
-                        buttons = {
-                            Button(modifier = Modifier.fillMaxWidth(),
-                                onClick = { openDialog.value = false }
-                            ) {
-                                Text("Новый список", fontSize = 12.sp)
-                            }
-                            Button(modifier = Modifier.fillMaxWidth(),
-                                onClick = { openDialog.value = false }
-                            ) {
-                                Text("Новое лекарство", fontSize = 12.sp)
-                            }
-                        }
-                    )
+                    /*MedicineInputDialog(
+                        onDismiss = { openDialog.value = false },
+                        onSave = { })*/
                 }
             }
         }
@@ -156,13 +132,11 @@ private fun ListItem(meds: Medicine, context: Activity) {
 }
 
 @Composable
-fun DrawerMenu(list: List<String>, onEvent: (DrawerEvents) -> Unit) {
+fun DrawerMenu(list: List<String>, onEvent: (DrawerEvents) -> Unit, context: Context) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Header()
-            Body(list) { event ->
-                onEvent(event)
-            }
+            Body(list, onEvent, context = context)
         }
     }
 }
@@ -193,22 +167,25 @@ fun Header() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Body(list: List<String>, onEvent: (DrawerEvents) -> Unit) {
+fun Body(list: List<String>, onEvent: (DrawerEvents) -> Unit, context: Context) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         itemsIndexed(list) { index, title ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(3.dp),
+                onClick = {
+                    var intent = Intent(context, MainActivity::class.java)
+                    intent.putExtra("listName", title)
+                    context.startActivity(intent)
+                }
             ) {
                 Text(
                     text = title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            onEvent(DrawerEvents.OnItemClick(title, index))
-                        }
                         .padding(10.dp)
                         .wrapContentWidth(),
                     fontWeight = FontWeight.Bold

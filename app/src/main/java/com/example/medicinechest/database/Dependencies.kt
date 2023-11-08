@@ -12,7 +12,7 @@ object Dependencies {
         }
 
         private val appDatabase: AppDatabase by lazy {
-            Room.databaseBuilder(applicationContext, AppDatabase::class.java, "db.db")
+            Room.databaseBuilder(applicationContext, AppDatabase::class.java, "aidss.db")
                 .createFromAsset("med.db")
                 .build()
         }
