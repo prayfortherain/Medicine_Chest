@@ -12,6 +12,11 @@
         android:theme="@style/Theme.MedicineChest"
         tools:targetApi="31">
         <activity
+            android:name=".MedicineInput"
+            android:exported="false"
+            android:label="@string/title_activity_medicine_input"
+            android:theme="@style/Theme.MedicineChest" />
+        <activity
             android:name=".InfoActivity"
             android:exported="false"
             android:label="@string/title_activity_info"

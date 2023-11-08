@@ -27,4 +27,10 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
         }
     }
 
+    suspend fun insertMedicine(medicine: Medicine){
+        return withContext(Dispatchers.IO){
+            return@withContext medicineDao.insertMedicine(medicine)
+        }
+    }
+
 }

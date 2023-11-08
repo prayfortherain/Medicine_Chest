@@ -24,4 +24,7 @@ interface MedicineDao {
 
     @Update
     fun updateMeds(medicine : Medicine)
+
+    @Insert
+    fun insertMedicine(medicine : Medicine)
 }
