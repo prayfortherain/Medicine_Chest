@@ -8,14 +8,12 @@ import com.example.medicinechest.database.MedicineRepository
 import kotlinx.coroutines.launch
 
 class MainVM(private val MedicineRepository: MedicineRepository): ViewModel() {
-    var name: MutableLiveData<String> = MutableLiveData<String>()
+    var id: MutableLiveData<Int> = MutableLiveData()
     var temp_list1: MutableLiveData<List<String>> = MutableLiveData()
     var medslist: MutableLiveData<List<Medicine>> = MutableLiveData()
-    var otherlists: MutableLiveData<List<Medicine>> = MutableLiveData()
-    var newmedicine: MutableLiveData<Medicine> = MutableLiveData()
-    fun getNameByID(id: Int){
+    fun getNameByID(name: String){
         viewModelScope.launch {
-            name.value = MedicineRepository.getNameByID(id)
+            id.value = MedicineRepository.getNameByID(name)
         }
     }
     fun getMedicinesList(listName: String){
@@ -29,9 +27,21 @@ class MainVM(private val MedicineRepository: MedicineRepository): ViewModel() {
         }
     }
 
-    fun insertMedicine(medicine: Medicine){
+    fun insertMedicine(name : String, composition : String, symptoms : String, contraindications : String, storageTemperature : String, sideEffects : String, instruction : String){
         viewModelScope.launch {
-            //newmedicine.value = MedicineRepository.insertMedicine(medicine)
+            MedicineRepository.insertMedicine(name, composition, symptoms, contraindications, storageTemperature, sideEffects, instruction)
+        }
+    }
+
+    fun deleteMedicine(medicine: Int){
+        viewModelScope.launch {
+            if(temp_list1.value!!.size == 1){
+                val id = temp_list1.value!!.indexOf(MedicineRepository.getById(medicine).symptoms)
+                temp_list1.value!!.drop(id)
+            }
+            medslist.value!!.drop(medicine)
+            MedicineRepository.deleteMedicine(medicine)
+
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.medicinechest
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -54,6 +55,7 @@ class InfoActivity : ComponentActivity() {
             if (id != null) {
                 viewModel.getById(id)
             }
+            Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show()
             viewModel.medicine.observe(this) {
                 medicine = it
             }
@@ -89,7 +91,9 @@ class InfoActivity : ComponentActivity() {
 
 @Composable
 fun Chapter(heading: String, description: String) {
-    Column(modifier = Modifier.fillMaxWidth().padding(4.dp),
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         Text(

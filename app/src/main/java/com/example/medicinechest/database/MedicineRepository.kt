@@ -4,9 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MedicineRepository(private val medicineDao: MedicineDao) {
-    suspend fun getNameByID(id: Int) : String{
+    suspend fun getNameByID(name : String) : Int{
         return withContext(Dispatchers.IO) {
-            return@withContext medicineDao.getNameById(id)
+            return@withContext medicineDao.getNameById(name)
         }
     }
     suspend fun getById(id: Int) : Medicine {
@@ -23,14 +23,20 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
 
     suspend fun getLists(): List<String>{
         return withContext(Dispatchers.IO){
-            return@withContext medicineDao.getLists()
+            return@withContext medicineDao.getLists().toSet().toList()
         }
     }
 
-    suspend fun insertMedicine(medicine: Medicine){
+    suspend fun insertMedicine(name : String, composition : String, symptoms : String, contraindications : String, storageTemperature : String, sideEffects : String, instruction : String){
         return withContext(Dispatchers.IO){
-            return@withContext medicineDao.insertMedicine(medicine)
+            medicineDao.addMedicine(name, composition, symptoms, contraindications, storageTemperature, sideEffects, instruction)
         }
     }
 
+    suspend fun deleteMedicine(medicine: Int){
+        return withContext(Dispatchers.IO){
+            val medicineEntity = medicineDao.getById(medicine)
+            medicineDao.deleteMedicine(medicineEntity)
+        }
+    }
 }
