@@ -55,10 +55,10 @@ class InfoActivity : ComponentActivity() {
             if (id != null) {
                 viewModel.getById(id)
             }
-            Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show() //проверка что правильно передали
             viewModel.medicine.observe(this) {
                 medicine = it
-            }
+            }//берем данные из бд
 
             Scaffold(
                 topBar = {
@@ -94,7 +94,7 @@ fun Chapter(heading: String, description: String) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally,//разметка
         verticalArrangement = Arrangement.Center) {
         Text(
             text = heading,

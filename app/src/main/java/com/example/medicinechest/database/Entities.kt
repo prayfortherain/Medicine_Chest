@@ -3,7 +3,7 @@ package com.example.medicinechest.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
+// Сущность таблицы Medicine
 @Entity(tableName = "Medicine",
 )
 data class Medicine(

@@ -70,7 +70,7 @@ class MedicineInput : ComponentActivity() {
                                     "Лекарство было добавлено.",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                iconClickable = false
+                                iconClickable = false //кнопка сохранения больше не отображается
                             } else{
                                     Toast.makeText(
                                         this@MedicineInput,
@@ -104,7 +104,7 @@ class MedicineInput : ComponentActivity() {
 }
 
 @Composable
-fun EditableTextField(value: MutableState<String>, field: String) {
+fun EditableTextField(value: MutableState<String>, field: String) { //чтобы очень плохо не выглядело
     OutlinedTextField(
         value = value.value,
         onValueChange = { newValue ->

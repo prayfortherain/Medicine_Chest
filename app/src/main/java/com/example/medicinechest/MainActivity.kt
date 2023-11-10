@@ -1,16 +1,11 @@
 package com.example.medicinechest
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +16,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,39 +49,37 @@ class MainActivity : ComponentActivity() {
             val coroutineScope = rememberCoroutineScope()
             var topBarTitle = remember { mutableStateOf("Список лекарств") }
             var checklists by remember { mutableStateOf(listOf("Loading...")) }
-
-
             var deleteID by remember {
                 mutableStateOf(0)
             }
             viewModel.getLists()
-            viewModel.temp_list1.observe(this) {
+            viewModel.temp_list1.observe(this) { //получение из базы данных списков по симптомам
                 checklists = it
             }
 
-            Scaffold(
+            Scaffold( //организация элементов окна
                 scaffoldState = scaffoldState,
                 topBar = {
                     TopAppBar {
                         MainTopBar(
-                            title = topBarTitle.value,
+                            title = topBarTitle.value, //название
                             scaffoldState
                         )
                     }
                 },
                 drawerContent = {
-                    DrawerMenu(checklists, onEvent = { event ->
+                    DrawerMenu(checklists, onEvent = { event -> //боковое меню
                         when (event) {
                             is DrawerEvents.OnItemClick -> {
                                 topBarTitle.value = event.title
                             }
                         }
                         coroutineScope.launch {
-                            scaffoldState.drawerState.close()
+                            scaffoldState.drawerState.close() //подгружает боковое меню
                         }
                     }, context = this@MainActivity)
                 },
-                floatingActionButton = {
+                floatingActionButton = {//плавающая кнопочка с переходом на активность вот так вот да
                     FloatingActionButton(
                         content = { Icon(Icons.Filled.Add, contentDescription = "Добавить") },
                         onClick = {
@@ -119,7 +113,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 viewModel.medslist.observe(this) {
-                    list = it
+                    list = it //получение списка лекарств
                 }
                 if(openDialog){
                     AlertDialog(onDismissRequest = {
@@ -149,21 +143,13 @@ class MainActivity : ComponentActivity() {
                         })
                 }
                 LazyColumn {
-                    items(list) {med ->
+                    items(list) {med -> //принял отобразил список
                         Card(modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth() //занял максимальную ширину
                             .defaultMinSize(minHeight = 50.dp)
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onLongPress = {
-                                        openDialog = true
-                                        deleteID = med.id
-                                    }
-                                )
-                            }
                             .padding(3.dp),
                             shape = RoundedCornerShape(10.dp),
-                            elevation = 5.dp,
+                            elevation = 5.dp, //тень под кнопочкой
                             onClick = {
                                 val intent =
                                     Intent(this@MainActivity, InfoActivity::class.java)
@@ -176,7 +162,23 @@ class MainActivity : ComponentActivity() {
                                     .fillMaxWidth(),
 
                                 ) {
-                                Text(text = "${med.name}")
+                                Row {
+                                    Text(text = "${med.name}")
+
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.CenterEnd
+                                    ){
+                                        Button(onClick = { //удаляет элемент
+                                            openDialog = true
+                                            deleteID = med.id
+                                        }) {
+                                            Icon(Icons.TwoTone.Delete, contentDescription = "Delete")
+                                        }
+
+                                    }
+                                }
+
                             }
                         }
                     }
