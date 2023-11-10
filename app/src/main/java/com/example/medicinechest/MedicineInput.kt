@@ -55,6 +55,7 @@ class MedicineInput : ComponentActivity() {
                         Spacer(Modifier.weight(1f, true))
                         if (iconClickable) {
                             IconButton(onClick = {
+                                if (name.value != " "){
                                 viewModel.insertMedicine(
                                     name = name.value,
                                     composition = composition.value,
@@ -70,6 +71,13 @@ class MedicineInput : ComponentActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 iconClickable = false
+                            } else{
+                                    Toast.makeText(
+                                        this@MedicineInput,
+                                        "Лекарство не было добавлено.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }) {
                                 Icon(
                                     Icons.Filled.Check,

@@ -3,19 +3,12 @@ package com.example.medicinechest.database
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.medicinechest.database.Medicine
-import com.example.medicinechest.database.MedicineRepository
 import kotlinx.coroutines.launch
 
 class MainVM(private val MedicineRepository: MedicineRepository): ViewModel() {
     var id: MutableLiveData<Int> = MutableLiveData()
     var temp_list1: MutableLiveData<List<String>> = MutableLiveData()
     var medslist: MutableLiveData<List<Medicine>> = MutableLiveData()
-    fun getNameByID(name: String){
-        viewModelScope.launch {
-            id.value = MedicineRepository.getNameByID(name)
-        }
-    }
     fun getMedicinesList(listName: String){
         viewModelScope.launch {
             medslist.value = MedicineRepository.getMedicinesList(listName)
