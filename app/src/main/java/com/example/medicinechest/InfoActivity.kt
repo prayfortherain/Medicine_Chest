@@ -34,7 +34,7 @@ class InfoActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: InfoViewModel = InfoViewModel(Dependencies.medicineRepository)
+        val viewModel = InfoViewModel(Dependencies.medicineRepository)
         setContent {
             val arguments = this.intent.extras
             val id = arguments?.getInt("id")

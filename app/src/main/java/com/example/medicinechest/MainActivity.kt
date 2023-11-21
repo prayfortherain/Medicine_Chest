@@ -1,6 +1,5 @@
 package com.example.medicinechest
 
-
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -39,17 +38,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Dependencies.init(applicationContext)
-        val viewModel: MainVM = MainVM(Dependencies.medicineRepository)
+        val viewModel = MainVM(Dependencies.medicineRepository)
         setContent {
-            if(IsTablet())
+
+            if(isTablet())
                 TabletScreen(context = this, viewModel = viewModel)
             else
                 PhoneScreen(context = this, viewModel = viewModel)
+
         }
     }
 }
 @Composable
-fun IsTablet(): Boolean{
+fun isTablet(): Boolean{
     val configuration = LocalConfiguration.current
     return if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
         configuration.screenWidthDp > 840
@@ -66,10 +67,10 @@ fun IsTablet(): Boolean{
 fun PhoneScreen(context: MainActivity, viewModel: MainVM){
 
     val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-    var topBarTitle = remember { mutableStateOf("Список лекарств") }
+    rememberCoroutineScope()
+    val topBarTitle = remember { mutableStateOf("Список лекарств") }
     var checklists by remember { mutableStateOf(listOf("Loading...")) }
-    viewModel.getLists()
+    //viewModel.getLists()
     viewModel.temp_list1.observe(context){
         checklists = it
     }
@@ -84,16 +85,8 @@ fun PhoneScreen(context: MainActivity, viewModel: MainVM){
             }
         },
         drawerContent = {
-            DrawerMenu(checklists, onEvent = { event ->
-                when (event) {
-                    is DrawerEvents.OnItemClick -> {
-                        topBarTitle.value = event.title
-                    }
-                }
-                coroutineScope.launch {
-                    scaffoldState.drawerState.close()
-                }
-            }, context = context
+            DrawerMenu(
+                checklists, context = context
             )
         },
         floatingActionButton = {
@@ -102,15 +95,15 @@ fun PhoneScreen(context: MainActivity, viewModel: MainVM){
                 onClick = {
                     val intent = Intent(context, MedicineInput::class.java)
                     context.startActivity(intent)
-                    viewModel.getLists()
+                    //viewModel.getLists()
                 }
             )
         },
         floatingActionButtonPosition = FabPosition.End,
         isFloatingActionButtonDocked = true,
-    ) {
+    ) { it ->
         it.calculateBottomPadding()
-        viewModel.getMedicinesList( context.intent.getStringExtra("listName") ?: "Аллергия" )
+        //viewModel.getMedicinesList( context.intent.getStringExtra("listName") ?: "Аллергия" )
         var list by remember {
             mutableStateOf(
                 listOf(
@@ -118,7 +111,7 @@ fun PhoneScreen(context: MainActivity, viewModel: MainVM){
                         "Loading...",
                         "Loading...",
                         1,
-                        "Loading...",
+                        "a",
                         "Loading...",
                         "Loading...",
                         "Loading...",
@@ -162,11 +155,11 @@ fun PhoneScreen(context: MainActivity, viewModel: MainVM){
 @Composable
 fun TabletScreen(context: MainActivity, viewModel: MainVM) {
     var checklists by remember { mutableStateOf(listOf("Loading...")) }
-    viewModel.getLists()
+        /*viewModel.getLists()
     viewModel.temp_list1.observe(context){
         checklists = it
     }
-    viewModel.getMedicinesList( context.intent.getStringExtra("listName") ?: "Аллергия" )
+    viewModel.getMedicinesList( context.intent.getStringExtra("listName") ?: "Аллергия" )*/
     var list by remember {
         mutableStateOf(
             listOf(
@@ -174,7 +167,7 @@ fun TabletScreen(context: MainActivity, viewModel: MainVM) {
                     "Loading...",
                     "Loading...",
                     1,
-                    "Loading...",
+                    "a",
                     "Loading...",
                     "Loading...",
                     "Loading...",
@@ -193,7 +186,7 @@ fun TabletScreen(context: MainActivity, viewModel: MainVM) {
                             .fillMaxWidth()
                             .padding(3.dp),
                         onClick = {
-                            viewModel.getMedicinesList(title)
+                            //viewModel.getMedicinesList(title)
                         }
                     ) {
                         Text(
@@ -237,11 +230,11 @@ fun TabletScreen(context: MainActivity, viewModel: MainVM) {
 }
 
 @Composable
-fun DrawerMenu(list: List<String>, onEvent: (DrawerEvents) -> Unit, context: Context) {
+fun DrawerMenu(list: List<String>, context: Context) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Header()
-            Body(list, onEvent, context = context)
+            Body(list, context = context)
         }
     }
 }
@@ -274,7 +267,7 @@ fun Header() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Body(list: List<String>, onEvent: (DrawerEvents) -> Unit, context: Context) {
+fun Body(list: List<String>, context: Context) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         itemsIndexed(list) { index, title ->
             Card(
@@ -282,7 +275,7 @@ fun Body(list: List<String>, onEvent: (DrawerEvents) -> Unit, context: Context) 
                     .fillMaxWidth()
                     .padding(3.dp),
                 onClick = {
-                    var intent = Intent(context, MainActivity::class.java)
+                    val intent = Intent(context, MainActivity::class.java)
                     intent.putExtra("listName", title)
                     context.startActivity(intent)
                 }
@@ -314,8 +307,4 @@ fun MainTopBar(title: String, scaffoldState: ScaffoldState) {
             { Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu") }
         }
     )
-}
-
-sealed class DrawerEvents {
-    data class OnItemClick(val title: String, val index: Int) : DrawerEvents()
 }

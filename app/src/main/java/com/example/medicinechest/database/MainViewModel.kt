@@ -9,8 +9,9 @@ class MainVM(private val MedicineRepository: MedicineRepository): ViewModel() {
 //инициализация
     var temp_list1: MutableLiveData<List<String>> = MutableLiveData()
     var medslist: MutableLiveData<List<Medicine>> = MutableLiveData()
+    //val listsWithMedicines: MutableLiveData<List<ListsWithMedicines>> = MutableLiveData()
 
-    //получение списка объедененных одним симптомом
+        /*//получение списка объедененных одним симптомом
     fun getMedicinesList(listName: String){
         viewModelScope.launch { //чтобы не засорять основной код корутинами запускаем здесь
             medslist.value = MedicineRepository.getMedicinesList(listName)
@@ -21,25 +22,49 @@ class MainVM(private val MedicineRepository: MedicineRepository): ViewModel() {
         viewModelScope.launch {
             temp_list1.value = MedicineRepository.getLists()
         }
-    }
+    }*/
 
     //добавляем без ид
     fun insertMedicine(name : String, composition : String, symptoms : String, contraindications : String, storageTemperature : String, sideEffects : String, instruction : String){
         viewModelScope.launch {
-            MedicineRepository.insertMedicine(name, composition, symptoms, contraindications, storageTemperature, sideEffects, instruction)
+            //MedicineRepository.insertMedicine(name, composition, symptoms, contraindications, storageTemperature, sideEffects, instruction)
+        }
+    }
+
+    fun getListWithMedicines(){
+        viewModelScope.launch {
+            //listsWithMedicines.value = MedicineRepository.getlistsWithMedicines()
         }
     }
 
     //удаляем элемент
-    fun deleteMedicine(medicine: Int){
-        viewModelScope.launch {
-            if(temp_list1.value!!.size == 1){ //решение проблемы с удалением первого элемента
-                val id = temp_list1.value!!.indexOf(MedicineRepository.getById(medicine).symptoms)
-                temp_list1.value!!.drop(id)
-            }
-            medslist.value!!.drop(medicine)
-            MedicineRepository.deleteMedicine(medicine)
+//    fun deleteMedicine(medicine: Int){
+//        viewModelScope.launch {
+//            if(temp_list1.value!!.size == 1){ //решение проблемы с удалением первого элемента
+//                val id = temp_list1.value!!.indexOf(MedicineRepository.getById(medicine).symptoms)
+//                temp_list1.value!!.drop(id)
+//            }
+//            medslist.value!!.drop(medicine)
+//            MedicineRepository.deleteMedicine(medicine)
+//
+//        }
+//    }
 
+    fun userExists(){
+        viewModelScope.launch {
+            MedicineRepository.userExists()
+        }
+    }
+
+    fun checkPassword(name : String){
+        viewModelScope.launch{
+            MedicineRepository.checkPassword(name)
+        }
+    }
+
+    fun insertUser(user: User){
+        viewModelScope.launch{
+            MedicineRepository.insertUser(user)
         }
     }
 }

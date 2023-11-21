@@ -11,7 +11,7 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
         }
     }
 
-    //получение списка объедененных одним симптомом
+    /*получение списка объедененных одним симптомом
     suspend fun getMedicinesList(listName: String): List<Medicine>{
         return withContext(Dispatchers.IO){
             return@withContext medicineDao.getMedicinesList(listName)
@@ -23,12 +23,12 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
         return withContext(Dispatchers.IO){
             return@withContext medicineDao.getLists().toSet().toList() //чтобы боковые списки не повторялись
         }
-    }
+    } */
 
     //добавляем новый медикамент без id
     suspend fun insertMedicine(name : String, composition : String, symptoms : String, contraindications : String, storageTemperature : String, sideEffects : String, instruction : String){
         return withContext(Dispatchers.IO){
-            medicineDao.addMedicine(name, composition, symptoms, contraindications, storageTemperature, sideEffects, instruction)
+            //medicineDao.addMedicine(name, composition, symptoms, contraindications, storageTemperature, sideEffects, instruction)
         }
     }
 
@@ -37,6 +37,28 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
         return withContext(Dispatchers.IO){
             val medicineEntity = medicineDao.getById(medicine) //получаем по id
             medicineDao.deleteMedicine(medicineEntity) //удаляем через запрос
+        }
+    }
+    /*suspend fun getlistsWithMedicines(): List<ListsWithMedicines>{
+        return withContext(Dispatchers.IO){
+            medicineDao.getlistsWithMedicines()
+        }
+    }*/
+    suspend fun userExists(){
+        return withContext(Dispatchers.IO){
+            medicineDao.userExists()
+        }
+    }
+
+    suspend fun checkPassword(name: String){
+        return withContext(Dispatchers.IO){
+            medicineDao.checkPassword(name)
+        }
+    }
+
+    suspend fun insertUser(user: User){
+        return withContext(Dispatchers.IO){
+            medicineDao.insertUser(user)
         }
     }
 }
