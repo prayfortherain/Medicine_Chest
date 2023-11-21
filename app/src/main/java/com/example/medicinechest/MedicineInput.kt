@@ -1,7 +1,11 @@
 package com.example.medicinechest
 
 import android.annotation.SuppressLint
+import android.app.Fragment
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,6 +28,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.medicinechest.database.Dependencies
 import com.example.medicinechest.database.MainVM
 
@@ -33,13 +39,13 @@ class MedicineInput : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val viewModel: MainVM = MainVM(Dependencies.medicineRepository)
         setContent {
-            var name = remember { mutableStateOf(" ") }
-            var composition = remember { mutableStateOf(" ") }
-            var symptoms = remember { mutableStateOf(" ") }
-            var instruction = remember { mutableStateOf(" ") }
-            var contraindications = remember { mutableStateOf(" ") }
-            var sideEffects = remember { mutableStateOf(" ") }
-            var storageTemperature = remember { mutableStateOf(" ") }
+            val name = remember { mutableStateOf(" ") }
+            val composition = remember { mutableStateOf(" ") }
+            val symptoms = remember { mutableStateOf(" ") }
+            val instruction = remember { mutableStateOf(" ") }
+            val contraindications = remember { mutableStateOf(" ") }
+            val sideEffects = remember { mutableStateOf(" ") }
+            val storageTemperature = remember { mutableStateOf(" ") }
             var iconClickable by remember { mutableStateOf(true) }
             Scaffold(
                 topBar = {
@@ -84,6 +90,7 @@ class MedicineInput : ComponentActivity() {
                                     contentDescription = "Save"
                                 )
                             }
+
                         }
                     }
                 }
@@ -102,6 +109,8 @@ class MedicineInput : ComponentActivity() {
         }
     }
 }
+
+
 
 @Composable
 fun EditableTextField(value: MutableState<String>, field: String) { //чтобы очень плохо не выглядело
