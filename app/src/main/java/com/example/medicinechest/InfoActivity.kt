@@ -27,38 +27,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicinechest.database.Dependencies
+import com.example.medicinechest.database.Description
 import com.example.medicinechest.database.InfoViewModel
+import com.example.medicinechest.database.MainVM
 import com.example.medicinechest.database.Medicine
+import com.example.medicinechest.database.MedicineSerialized
 
 class InfoActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: InfoViewModel = InfoViewModel(Dependencies.medicineRepository)
+        //val viewModel = InfoViewModel(Dependencies.medicineRepository)
+        val viewModel = MainVM(Dependencies.medicineRepository, Dependencies.httpRepository)
         setContent {
             val arguments = this.intent.extras
-            val id = arguments?.getInt("id")
-            var medicine by remember {
-                mutableStateOf(
-                    Medicine(
-                        "Loading...",
-                        "Loading...",
-                        0,
-                        "Loading...",
-                        "Loading...",
-                        "Loading...",
-                        "Loading...",
-                        "Loading..."
-                    )
-                )
-            }
+            val name = arguments?.getString("name")
+            //var medicine by remember { mutableStateOf(Medicine("Loading...","Loading...",0,"Loading...","Loading...","Loading...","Loading...","Loading..." ))}
+            /*
             if (id != null) {
                 viewModel.getById(id)
             }
-            Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show() //проверка что правильно передали
             viewModel.medicine.observe(this) {
                 medicine = it
-            }//берем данные из бд
+            }
+*/
+            var medicine by remember {
+                mutableStateOf(MedicineSerialized("работай", "string", Description("string", "string", "string", "string")))
+            }
+            viewModel.apcthi.observe(this){
+                medicine = it
+            }
+            if (name != null) {
+                viewModel.getMedicineByName(name)
+            }
+
 
             Scaffold(
                 topBar = {
@@ -77,12 +79,12 @@ class InfoActivity : ComponentActivity() {
             ) {
                 Column {
                     ListItem("Название лекарства", medicine.name)
-                    ListItem("Состав", medicine.composition)
-                    ListItem("Симптомы", medicine.symptoms)
-                    ListItem("Инструкция по применению", medicine.instruction)
-                    ListItem("Противопоказания", medicine.contraindications)
-                    ListItem("Побочные эффекты", medicine.sideEffects)
-                    ListItem("Условия хранения", medicine.storageTemperature)
+                    ListItem("Состав", medicine.description.composition)
+                    ListItem("Симптомы", medicine.symptom)
+                    ListItem("Инструкция по применению", "Нету. Не добавили :<")
+                    ListItem("Противопоказания", medicine.description.contraindications)
+                    ListItem("Побочные эффекты", medicine.description.sideEffects)
+                    ListItem("Условия хранения", medicine.description.storageConditions)
                 }
             }
         }

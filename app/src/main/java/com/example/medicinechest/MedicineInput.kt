@@ -1,11 +1,7 @@
 package com.example.medicinechest
 
 import android.annotation.SuppressLint
-import android.app.Fragment
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,8 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.medicinechest.database.Dependencies
 import com.example.medicinechest.database.MainVM
 
@@ -37,7 +31,7 @@ class MedicineInput : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: MainVM = MainVM(Dependencies.medicineRepository)
+        val viewModel = MainVM(Dependencies.medicineRepository, Dependencies.httpRepository)
         setContent {
             val name = remember { mutableStateOf(" ") }
             val composition = remember { mutableStateOf(" ") }
@@ -62,15 +56,7 @@ class MedicineInput : ComponentActivity() {
                         if (iconClickable) {
                             IconButton(onClick = {
                                 if (name.value != " "){
-                                viewModel.insertMedicine(
-                                    name = name.value,
-                                    composition = composition.value,
-                                    symptoms = symptoms.value,
-                                    contraindications = contraindications.value,
-                                    storageTemperature = storageTemperature.value,
-                                    sideEffects = sideEffects.value,
-                                    instruction = instruction.value
-                                )
+
                                 Toast.makeText(
                                     this@MedicineInput,
                                     "Лекарство было добавлено.",

@@ -1,10 +1,12 @@
 package com.example.medicinechest
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -31,25 +33,97 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.room.*
 import com.example.medicinechest.database.Dependencies
+import com.example.medicinechest.database.Description
 import com.example.medicinechest.database.MainVM
 import com.example.medicinechest.database.Medicine
+import com.example.medicinechest.database.MedicineListWrapper
+import com.example.medicinechest.database.MedicineSerialized
 import kotlinx.coroutines.launch
 
+
 class MainActivity : ComponentActivity() {
+
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Dependencies.init(applicationContext)
-        val viewModel: MainVM = MainVM(Dependencies.medicineRepository)
+        val viewModel = MainVM(Dependencies.medicineRepository, Dependencies.httpRepository)
+
         setContent {
-            if(IsTablet())
+
+
+            val trypost = format("работай", "строка", "строка", "строка", "строка", "строка")
+            Log.d("Check json", trypost)
+            viewModel.postQuery(trypost)
+
+            var text by remember {
+                mutableStateOf(emptyList<MedicineSerialized>())
+            }
+            viewModel.something.observe(this){
+                text = it
+            }
+            viewModel.getSomething()
+
+
+
+            Scaffold (
+                floatingActionButton = {
+                    FloatingActionButton(
+                        content = { Icon(Icons.Filled.Add, contentDescription = "Добавить") },
+                        onClick = {
+                            val intent = Intent(this@MainActivity, MedicineInput::class.java)
+                            startActivity(intent)
+                            viewModel.getLists()
+                        }
+                    )
+                },
+                floatingActionButtonPosition = FabPosition.End,
+                isFloatingActionButtonDocked = true,
+            ){
+            LazyColumn {
+                items(text) { med ->
+                    if(med.name != "Артём лох"){
+                        Card(modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 50.dp)
+                            .padding(3.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = 5.dp,
+                            onClick = {
+                                val intent = Intent(this@MainActivity, InfoActivity::class.java)
+                                intent.putExtra("med", med.name)
+                                startActivity(intent)
+                            }
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+
+                                ) {
+                                Text(text = med.name)
+                            }
+                        }
+                    }
+                }
+            }
+            }
+            /*
+            if(isTablet())
                 TabletScreen(context = this, viewModel = viewModel)
             else
                 PhoneScreen(context = this, viewModel = viewModel)
+            */
         }
     }
 }
+
+fun format(name : String, symptom : String, composition : String, contraindications : String, storageConditions : String, sideEffects : String): String {
+    return """{"name": "$name", "symptom": "$symptom", "description": {"contraindications": "$contraindications", "composition": "$composition", "sideEffects": "$sideEffects", "storageConditions": "$storageConditions"}}""".trimIndent()
+}
 @Composable
-fun IsTablet(): Boolean{
+fun isTablet(): Boolean{
     val configuration = LocalConfiguration.current
     return if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
         configuration.screenWidthDp > 840

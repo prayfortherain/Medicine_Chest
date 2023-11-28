@@ -2,9 +2,10 @@ package com.example.medicinechest.database
 
 import android.content.Context
 import androidx.room.Room
+import com.example.medicinechest.HttpRepository
 
 object Dependencies {
-        private lateinit var applicationContext: Context
+    private lateinit var applicationContext: Context
 
         fun init(context: Context) { //конструктор
             applicationContext = context
@@ -17,4 +18,5 @@ object Dependencies {
         }
 
         val medicineRepository: MedicineRepository by lazy { MedicineRepository(appDatabase.getDao()) }
+        val httpRepository: HttpRepository by lazy { HttpRepository() }
     }
