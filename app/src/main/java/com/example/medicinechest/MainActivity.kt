@@ -1,12 +1,10 @@
 package com.example.medicinechest
 
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -33,13 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.room.*
 import com.example.medicinechest.database.Dependencies
-import com.example.medicinechest.database.Description
 import com.example.medicinechest.database.MainVM
 import com.example.medicinechest.database.Medicine
-import com.example.medicinechest.database.MedicineListWrapper
 import com.example.medicinechest.database.MedicineSerialized
 import kotlinx.coroutines.launch
-
 
 class MainActivity : ComponentActivity() {
 
@@ -52,10 +47,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-
-            val trypost = format("работай", "строка", "строка", "строка", "строка", "строка")
-            Log.d("Check json", trypost)
-            viewModel.postQuery(trypost)
+            //val trypost = format("с др", "с др", "с", "днем", "рождения", "ура")
+            //viewModel.postQuery(trypost)
 
             var text by remember {
                 mutableStateOf(emptyList<MedicineSerialized>())
@@ -64,8 +57,6 @@ class MainActivity : ComponentActivity() {
                 text = it
             }
             viewModel.getSomething()
-
-
 
             Scaffold (
                 floatingActionButton = {

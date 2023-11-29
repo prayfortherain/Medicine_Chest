@@ -44,21 +44,4 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
             medicineDao.getlistsWithMedicines()
         }
     }*/
-    suspend fun userExists(){
-        return withContext(Dispatchers.IO){
-            medicineDao.userExists()
-        }
-    }
-
-    suspend fun checkPassword(name: String){
-        return withContext(Dispatchers.IO){
-            medicineDao.checkPassword(name)
-        }
-    }
-
-    suspend fun insertUser(user: User){
-        return withContext(Dispatchers.IO){
-            medicineDao.insertUser(user)
-        }
-    }
 }

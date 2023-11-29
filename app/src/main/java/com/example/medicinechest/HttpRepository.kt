@@ -1,37 +1,23 @@
+
 package com.example.medicinechest
 
-import com.example.medicinechest.database.MedicineListWrapper
-import com.example.medicinechest.database.MedicineSerialized
+import android.util.Log
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
+import io.ktor.http.content.TextContent
 
 class HttpRepository {
     suspend fun sendMedicineDataToServer(medicine: String) {
-
-        val httpClient = HttpClient {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(Json { isLenient = true; ignoreUnknownKeys = true })
-            }
-        }
-
-        val url = "https://malw.ru/api/Medicines"
-
+        val httpClient = HttpClient {}
         try {
-            // Отправляем POST-запрос с данными в формате JSON
-            val response = httpClient.post<Unit>(url) {
-                contentType(ContentType.Application.Json)
-                body = medicine
-            }
+            httpClient.post<Unit>("http://37.77.105.18/api/Medicines") {
+                body = TextContent(medicine, ContentType.Application.Json)
+                Log.d("Send to server", "Success")
 
-            println("все круто")
+            }
         } catch (e: Exception) {
-            println("Произошла ошибка при отправке запроса: $e")
+            e.message?.let { Log.i("requesttt", it) }
         } finally {
             httpClient.close()
         }

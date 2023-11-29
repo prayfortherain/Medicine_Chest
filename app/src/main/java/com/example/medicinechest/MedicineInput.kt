@@ -56,7 +56,7 @@ class MedicineInput : ComponentActivity() {
                         if (iconClickable) {
                             IconButton(onClick = {
                                 if (name.value != " "){
-
+                                    viewModel.postQuery(format(name.value, symptoms.value, composition.value, contraindications.value, storageTemperature.value, sideEffects.value))
                                 Toast.makeText(
                                     this@MedicineInput,
                                     "Лекарство было добавлено.",
@@ -86,7 +86,7 @@ class MedicineInput : ComponentActivity() {
                     EditableTextField(value = name, "Название")
                     EditableTextField(value = composition, "Состав")
                     EditableTextField(value = symptoms, "Симптомы")
-                    EditableTextField(value = instruction, "Инструкция по применению")
+                    //EditableTextField(value = instruction, "Инструкция по применению")
                     EditableTextField(value = contraindications, "Противопоказания")
                     EditableTextField(value = sideEffects, "Побочные эффекты")
                     EditableTextField(value = storageTemperature, "Условия хранения")

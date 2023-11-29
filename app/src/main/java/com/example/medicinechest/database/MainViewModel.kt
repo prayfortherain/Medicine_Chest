@@ -19,15 +19,18 @@ class MainVM(private val MedicineRepository: MedicineRepository, private val htt
     var something: MutableLiveData<List<MedicineSerialized>> = MutableLiveData()
     var apcthi : MutableLiveData<MedicineSerialized> = MutableLiveData()
     //получение списка объедененных одним симптомом
+
+
     fun getMedicinesList(listName: String){
+
         viewModelScope.launch { //чтобы не засорять основной код корутинами запускаем здесь
-            medslist.value = MedicineRepository.getMedicinesList(listName)
+            //medslist.value = MedicineRepository.getMedicinesList(listName)
         }
     }
     //получение списка для бокового меню
     fun getLists(){
         viewModelScope.launch {
-            temp_list1.value = MedicineRepository.getLists()
+            //temp_list1.value = MedicineRepository.getLists()
         }
     }
 

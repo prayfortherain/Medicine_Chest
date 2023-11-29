@@ -11,8 +11,8 @@ interface MedicineDao {
     @Query("SELECT * FROM Medicine WHERE id = :id")
     suspend fun getById(id: Int): Medicine // берем лекарство по ID
 
-    @Query("SELECT * FROM Lists")
-    suspend fun getlistsWithMedicines(): List<ListMedicinePair>
+    //@Query("SELECT * FROM Lists")
+    //suspend fun getlistsWithMedicines(): List<ListMedicinePair>
 
     @Update
     fun updateMeds(medicine : Medicine) //обновить
@@ -24,13 +24,4 @@ interface MedicineDao {
     @Query("INSERT INTO Medicine (name, composition, symptoms, contraindications, storageTemperature,sideEffects, instruction) VALUES (:name, :composition, :symptoms, :contraindications, :storageTemperature, :sideEffects, :instruction)")
     fun addMedicine(name : String, composition : String, symptoms : String, contraindications : String, storageTemperature : String, sideEffects : String, instruction : String)
 
-    //user
-    @Insert
-    fun insertUser (user: User)
-
-    @Query("SELECT name FROM User")
-    fun userExists(): List<String>
-
-    @Query("SELECT password FROM User where name = :name")
-    fun checkPassword (name: String)
 }
